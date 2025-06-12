@@ -2,85 +2,95 @@ using UnityEngine;
 
 public class Door : MonoBehaviour, IInteractable
 {
-    private float speed;
     [SerializeField] private float finalAngle;
     [SerializeField] private float startAngle;
-    private float angle;
-    private Vector3 direction;
-    private Transform doorPivot;
-    private AudioSource audioSource;
     [SerializeField] private AudioClip clip;
+    [SerializeField] private bool canBeOpen = true;
 
-    [SerializeField] private bool canBeOpen;
+    private float speed = 100f;
+    private float targetAngle;
+    private Vector3 direction;
     private bool isOpen;
-
-    public bool doorWasOpen = false;
+    private Quaternion initialPivotRotation;
+    private Transform doorPivot;
+    private AudioSource sfxSource;
     private string onInteractMsg;
 
+    public bool doorWasOpen { get; private set; }
     public string OnInteractMsg => onInteractMsg;
 
     void Start()
     {
-        audioSource = GameObject.Find("SFX").GetComponent<AudioSource>();
+        sfxSource = GameObject.Find("SFX").GetComponent<AudioSource>();
         doorPivot = transform.parent;
-        speed = 100f;
+        initialPivotRotation = doorPivot.localRotation;
         isOpen = false;
-        if (!canBeOpen)
-        {
-            onInteractMsg = "Door Locked";
-        }
-        else
-        {
-            if (!isOpen)
-            {
-                onInteractMsg = "Open Door";
-            }
-            else
-            {
-                onInteractMsg = "Close Door";
-            }
-        }
-        angle = transform.eulerAngles.y;
+        targetAngle = startAngle;
+        doorPivot.localEulerAngles = new Vector3(doorPivot.localEulerAngles.x, startAngle, doorPivot.localEulerAngles.z);
+
+        UpdateInteractMsg();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if(Mathf.Round(doorPivot.eulerAngles.y) != angle)
-        {
+        if (Mathf.Round(doorPivot.localEulerAngles.y) != Mathf.Round(targetAngle))
             doorPivot.Rotate(direction * speed * Time.deltaTime);
-        }
     }
 
     public void OnInteract()
     {
-        if(canBeOpen)
+        if (!canBeOpen) return;
+
+        doorWasOpen = true;
+        isOpen = !isOpen;
+
+        if (isOpen)
         {
-            doorWasOpen = true;
-            if (isOpen == false)
-            {
-                angle = finalAngle;
-                direction = Vector3.up;
-                isOpen = true;
-                onInteractMsg = "Close door";
-                audioSource.clip = clip;
-                audioSource.Play();
-            }
-            else if (isOpen == true)
-            {
-                angle = startAngle;
-                direction = Vector3.down;
-                isOpen = false;
-                onInteractMsg = "Open door";
-                audioSource.clip = clip;
-                audioSource.Play();
-            }
+            targetAngle = finalAngle;
+            direction = Vector3.up;
         }
+        else
+        {
+            targetAngle = startAngle;
+            direction = Vector3.down;
+        }
+
+        PlaySfx();
+        UpdateInteractMsg();
+    }
+
+    private void PlaySfx()
+    {
+        sfxSource.clip = clip;
+        sfxSource.Play();
+    }
+
+    private void UpdateInteractMsg()
+    {
+        onInteractMsg = canBeOpen
+            ? (isOpen ? "Close Door" : "Open Door")
+            : "Door Locked";
     }
 
     public void UnlockDoor()
     {
         canBeOpen = true;
-        onInteractMsg = "Open Door";
+        UpdateInteractMsg();
+    }
+
+    public void LockDoor()
+    {
+        canBeOpen = false;
+        UpdateInteractMsg();
+    }
+
+    public void ResetDoor()
+    {
+        doorPivot.localRotation = initialPivotRotation;
+        isOpen = false;
+        doorWasOpen = false;
+        canBeOpen = false;
+        targetAngle = startAngle;
+        UpdateInteractMsg();
     }
 }
