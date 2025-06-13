@@ -12,6 +12,8 @@ public class BedEvent : MonoBehaviour, IInteractable
     [Header("Vela")]
     [Tooltip("Prefab de la vela que vamos a instanciar o activar")]
     [SerializeField] private GameObject candlePrefab;
+    [SerializeField] private GameObject fakeCandlePrefab;
+    [SerializeField] private GameObject candleFlame;
     [Tooltip("Punto donde se instanciará la vela (por ejemplo, mano del jugador)")]
     [SerializeField] private Transform candleSpawnPoint;
 
@@ -32,7 +34,6 @@ public class BedEvent : MonoBehaviour, IInteractable
         foreach (var obj in lanternObjects)
             obj.SetActive(false);
 
-        GiveCandleToPlayer();
 
         Invoke(nameof(FadeOut), 3f);
     }
@@ -45,6 +46,8 @@ public class BedEvent : MonoBehaviour, IInteractable
         candlePrefab.transform.localPosition = Vector3.zero;
         candlePrefab.transform.localRotation = Quaternion.identity;
         candlePrefab.SetActive(true);
+        fakeCandlePrefab.SetActive(true);
+        candleFlame.SetActive(true);
     }
 
 
@@ -65,7 +68,7 @@ public class BedEvent : MonoBehaviour, IInteractable
         var player = GameObject.Find("Player");
         player.GetComponent<PlayerMovement>().enabled = true;
         Camera.main.GetComponent<CameraController>().enabled = true;
-
+        GiveCandleToPlayer();
         Destroy(this);
     }
 }
