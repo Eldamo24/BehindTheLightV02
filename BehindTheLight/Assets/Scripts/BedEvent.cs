@@ -20,6 +20,8 @@ public class BedEvent : MonoBehaviour, IInteractable
     [Header("Puzzles y demás")]
     [SerializeField] private List<GameObject> objectsToActive;
     [SerializeField] private List<GameObject> puzzleObjects;
+    [SerializeField] private GameObject note;
+
 
     public string OnInteractMsg => onInteractMsg;
 
@@ -48,6 +50,7 @@ public class BedEvent : MonoBehaviour, IInteractable
         candlePrefab.SetActive(true);
         fakeCandlePrefab.SetActive(true);
         candleFlame.SetActive(true);
+        note.SetActive(true);
     }
 
 
@@ -69,6 +72,7 @@ public class BedEvent : MonoBehaviour, IInteractable
         player.GetComponent<PlayerMovement>().enabled = true;
         Camera.main.GetComponent<CameraController>().enabled = true;
         GiveCandleToPlayer();
+        gameObject.layer = 0;
         Destroy(this);
     }
 }
