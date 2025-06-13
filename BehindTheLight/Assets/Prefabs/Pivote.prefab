@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 1021881068581860573}
   - component: {fileID: 703324763269833052}
   - component: {fileID: 1852743590307429079}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: e2ce3b2cb72c8154085967a0b2ff2f79, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -153,7 +153,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   finalAngle: 0
   startAngle: 0
-  doorWasOpen: 0
+  clip: {fileID: 0}
+  canBeOpen: 1
 --- !u!82 &1852743590307429079
 AudioSource:
   m_ObjectHideFlags: 0
