@@ -7,6 +7,8 @@ public class NoteInteraction : MonoBehaviour, IInteractable
     [SerializeField] private string noteMSG;
     [SerializeField] private GameObject notePanel;
     [SerializeField] private GameObject cameraNotes;
+    [SerializeField] private GameObject fakeCamera;
+    [SerializeField] private GameObject candleLight;
     [SerializeField] private TMP_Text textNotes;
     [SerializeField] private float offset;
     [SerializeField] private CameraController principalCamera;
@@ -43,6 +45,8 @@ public class NoteInteraction : MonoBehaviour, IInteractable
         isInteracting = true;
         principalCamera.enabled = false;
         pMovement.enabled = false;
+        fakeCamera.SetActive(false);
+        candleLight.SetActive(false);
     }
 
     private void DesactivateInteraction()
@@ -53,7 +57,9 @@ public class NoteInteraction : MonoBehaviour, IInteractable
         isInteracting = false;
         principalCamera.enabled = true;
         pMovement.enabled = true;
-        transform.rotation = startRotation;
+        transform.rotation = startRotation; 
+        fakeCamera.SetActive(true);
+        candleLight.SetActive(true);
     }
 
     private void NoteRotation()
